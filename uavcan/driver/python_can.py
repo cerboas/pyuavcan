@@ -41,10 +41,11 @@ class PythonCan(AbstractDriver):
             logger.error("To use this driver, make sure the module python-can is installed")
             raise ValueError("python-can must be installed.")
 
-        # get bus from default config
         try:
-            self._bus = can.Bus()
-            # self._bus.state = can.bus.BusState.ACTIVE
+            if interface is None:
+                self._bus = can.Bus() # get bus from environment's config
+            else:
+                self._bus = can.interface.Bus(channel=interface, bustype=_extras['bustype'], bitrate=_extras['bitrate'])
         except Exception as ex:
             logger.info("Please make sure you have a valid can.ini file located in the current working directory.")
             logger.info("See also: https://python-can.readthedocs.io/en/master/configuration.html#configuration-file")
