@@ -32,19 +32,15 @@ class Signature:
         '''
         extend_from    Initial value (optional)
         '''
-        if extend_from is not None:
-            self._crc = (int(extend_from) & Signature.MASK64) ^ Signature.MASK64
-        else:
+        if extend_from is None:
             self._crc = Signature.MASK64
+        else:
+            self._crc = (int(extend_from) & Signature.MASK64) ^ Signature.MASK64
 
     def add(self, data_bytes):
         '''Feed ASCII string or bytes to the signature function'''
-        try:
-            if isinstance(data_bytes, basestring):  # Python 2.7 compatibility
-                data_bytes = map(ord, data_bytes)
-        except NameError:
-            if isinstance(data_bytes, str):  # This branch will be taken on Python 3
-                data_bytes = map(ord, data_bytes)
+        if isinstance(data_bytes, str):
+            data_bytes = map(ord, data_bytes)
 
         for b in data_bytes:
             self._crc ^= (b << 56) & Signature.MASK64
