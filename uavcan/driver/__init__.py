@@ -20,9 +20,9 @@ else:
 try:
     import can
 except ImportError:
-    PythonCan = None
+    PythonCAN = None
 else:
-    from .python_can import PythonCan
+    from .python_can import PythonCAN
 
 __all__ = ['make_driver', 'DriverError', 'CANFrame']
 
@@ -35,12 +35,11 @@ def make_driver(device_name, **kwargs):
     """
     windows_com_port = device_name.replace('\\', '').replace('.', '').lower().startswith('com')
     unix_tty = device_name.startswith('/dev/')
-    pythoncan = device_name.startswith('pythoncan')
 
     if windows_com_port or unix_tty:
         return SLCAN(device_name, **kwargs)
-    elif PythonCan is not None:
-        return PythonCan(device_name, **kwargs)
+    elif PythonCAN is not None:
+        return PythonCAN(device_name, **kwargs)
     elif SocketCAN is not None:
         return SocketCAN(device_name, **kwargs)
     else:
